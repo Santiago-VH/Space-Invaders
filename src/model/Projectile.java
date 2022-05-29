@@ -1,14 +1,13 @@
 package model;
 
-public class PlayerShip {
+public class Projectile {
 
 	private double x;
 	private double y;
 	
+	private int deltaY;
 	
-	private int deltaX;
-	
-	public PlayerShip(double x, double y) {
+	public Projectile(double x, double y) {
 		this.setX(x);
 		this.setY(y);
 	}
@@ -29,20 +28,15 @@ public class PlayerShip {
 		this.y = y;
 	}
 
-	public int getDeltaX() {
-		return deltaX;
+	public int getDeltaY() {
+		return deltaY;
 	}
 
-	public void setDeltaX(int deltaX) {
-		this.deltaX = deltaX;
+	public void setDeltaY(int deltaY) {
+		this.deltaY = deltaY;
 	}
 
-	public void moveRight() {
-		x += deltaX;
+	public void moveUp() {
+		y += deltaY;
 	}
-	
-	public void moveLeft() {
-		x -= deltaX;
-	}
-	
 }
