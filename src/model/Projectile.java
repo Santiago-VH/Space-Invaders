@@ -7,9 +7,10 @@ public class Projectile {
 	
 	private int deltaY;
 	
-	public Projectile(double x, double y) {
+	public Projectile(double x, double y, int deltaY) {
 		this.setX(x);
 		this.setY(y);
+		this.deltaY=deltaY;
 	}
 
 	public double getX() {
@@ -37,6 +38,6 @@ public class Projectile {
 	}
 
 	public void moveUp() {
-		y += deltaY;
+		this.y += deltaY;
 	}
 }

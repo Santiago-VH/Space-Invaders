@@ -44,10 +44,14 @@ public class GameGUI implements Initializable{
 
 	public void paint() {		
 		Platform.runLater(()->{
-			PlayerShip ship = main.getBoard().getPlayerShip();
-			
+			gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 			gc.setFill(Color.YELLOW);
-			gc.fillPolygon(new double[] {300,285,300,315}, new double[] {402,442,430,442}, 4);
+			double x = main.getBoard().getPlayerShip().getX();
+			double y = main.getBoard().getPlayerShip().getY();
+			gc.fillPolygon(new double[] {x,x-15,x,x+15}, new double[] {y-20,y+20,y+8,y+20}, 4);
+			main.getBoard().getProjectiles().forEach(projectile -> {
+				gc.fillRect(projectile.getX()-3, projectile.getY()-6, 6, 12);
+			});
 		});
 	}
 	
@@ -55,11 +59,14 @@ public class GameGUI implements Initializable{
 		Thread hilo = new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1000/50);
+					Thread.sleep(50/3);
+					main.getBoard().getProjectiles().forEach(projectile -> {
+						projectile.moveUp();
+					});
+					main.getBoard().updateProjectiles();
 					main.getBoard().updatePlayer();
 					paint();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -80,9 +87,8 @@ public class GameGUI implements Initializable{
 			break;
 			
 		case SPACE:
-			Projectile projectile = new Projectile(main.getBoard().getPlayerShip().getX(),
-													main.getBoard().getPlayerShip().getY());
-			
+			Projectile projectile = new Projectile(main.getBoard().getPlayerShip().getX(), main.getBoard().getPlayerShip().getY(),1);
+			main.getBoard().getProjectiles().add(projectile);
 			break;
 		
 		default:

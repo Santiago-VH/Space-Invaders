@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Board {
 
@@ -11,13 +12,13 @@ public class Board {
 	private PlayerShip fShip;
 	
 	private EnemyShip[] eShip;
-	private ArrayList<Projectile> projectiles;
+	private CopyOnWriteArrayList<Projectile> projectiles;
 	
 	public Board() {
 		setPlayerShip(new PlayerShip(250, 250));
 		fShip.setDeltaX(2);
 		eShip= new EnemyShip[E_SHIP_AMOUNT];
-		projectiles=new ArrayList<Projectile>();
+		projectiles=new CopyOnWriteArrayList<Projectile>();
 	}
 
 	public PlayerShip getPlayerShip() {
@@ -39,6 +40,15 @@ public class Board {
 		}
 		
 	}
+	
+	public void updateProjectiles() {
+		for(Projectile projectile:projectiles) {
+			if (projectile.getDeltaY() > 0 && projectile.getY() + projectile.getDeltaY() > HEIGHT) {
+				projectiles.remove(projectile);
+			}
+		}
+		
+	}
 
 	public PlayerShip getfShip() {
 		return fShip;
@@ -56,11 +66,11 @@ public class Board {
 		this.eShip = eShip;
 	}
 
-	public ArrayList<Projectile> getProjectiles() {
+	public CopyOnWriteArrayList<Projectile> getProjectiles() {
 		return projectiles;
 	}
 
-	public void setProjectiles(ArrayList<Projectile> projectiles) {
+	public void setProjectiles(CopyOnWriteArrayList<Projectile> projectiles) {
 		this.projectiles = projectiles;
 	}
 	
