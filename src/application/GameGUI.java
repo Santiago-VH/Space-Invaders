@@ -11,6 +11,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import model.Board;
 import model.PlayerShip;
 import model.Projectile;
 
@@ -48,22 +49,26 @@ public class GameGUI implements Initializable{
 			gc.setFill(Color.YELLOW);
 			double x = main.getBoard().getPlayerShip().getX();
 			double y = main.getBoard().getPlayerShip().getY();
+			
 			gc.fillPolygon(new double[] {x,x-15,x,x+15}, new double[] {y-20,y+20,y+8,y+20}, 4);
+			
+			main.getBoard().getEnemies().forEach(enemy ->{
+				gc.fillPolygon(new double[] {enemy.getX()-20,enemy.getX(),enemy.getX()+20,}, new double[] {enemy.getY()-10,enemy.getY()+10,enemy.getY()-10}, 3);
+			});
+			
 			main.getBoard().getProjectiles().forEach(projectile -> {
-				gc.fillRect(projectile.getX()-3, projectile.getY()-6, 6, 12);
+				gc.fillRect(projectile.getX()-2, projectile.getY()-5, 4, 10);
 			});
 		});
 	}
 	
-	public void start() {
-		Thread hilo = new Thread(() -> {
+	public void startP() {
+		Thread startThread = new Thread(() -> {		
 			while (true) {
 				try {
 					Thread.sleep(50/3);
-					main.getBoard().getProjectiles().forEach(projectile -> {
-						projectile.moveUp();
-					});
-					main.getBoard().updateProjectiles();
+					enemy();
+					projectile();
 					main.getBoard().updatePlayer();
 					paint();
 				} catch (InterruptedException e) {
@@ -72,7 +77,33 @@ public class GameGUI implements Initializable{
 			}
 
 		});
-		hilo.start();
+		startThread.start();
+	}
+	
+	public void projectile() {
+		Runnable projectiles=() -> {
+			main.getBoard().getProjectiles().forEach(projectile -> {
+				projectile.moveUp();
+			});
+			main.getBoard().updateProjectiles();
+		};
+		Thread projectileThread = new Thread(projectiles); 
+		projectileThread.start();
+	}
+	
+	public void enemy() {
+		Runnable enemies = () -> {
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			main.getBoard().getEnemies().forEach(enemy ->{
+				enemy.moveDown();
+			});
+		};
+		Thread enemyThread = new Thread(enemies);
+		enemyThread.start();
 	}
 	
 	@FXML

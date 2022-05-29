@@ -3,8 +3,7 @@ package model;
 public class PlayerShip {
 
 	private double x;
-	private double y;
-	
+	private double y;	
 	
 	private int deltaX;
 	

@@ -16,9 +16,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		setBoard(new Board());
-		
 		try {
-			
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML/gameView.fxml"));
 			BorderPane root = (BorderPane)loader.load();
 			GameGUI controller = loader.getController();
@@ -30,7 +28,7 @@ public class Main extends Application {
 			primaryStage.setTitle("Space Invaders");
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("PNGs/titleIcon.png")));
 			primaryStage.show();
-			controller.start();
+			controller.startP();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

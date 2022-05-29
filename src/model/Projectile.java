@@ -38,6 +38,6 @@ public class Projectile {
 	}
 
 	public void moveUp() {
-		this.y += deltaY;
+		this.y -= deltaY;
 	}
 }
