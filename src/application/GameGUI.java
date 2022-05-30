@@ -49,11 +49,11 @@ public class GameGUI implements Initializable{
 			gc.setFill(Color.YELLOW);
 			double x = main.getBoard().getPlayerShip().getX();
 			double y = main.getBoard().getPlayerShip().getY();
-			
+
 			gc.fillPolygon(new double[] {x,x-15,x,x+15}, new double[] {y-20,y+20,y+8,y+20}, 4);
 			
 			main.getBoard().getEnemies().forEach(enemy ->{
-				gc.fillPolygon(new double[] {enemy.getX()-20,enemy.getX(),enemy.getX()+20,}, new double[] {enemy.getY()-10,enemy.getY()+10,enemy.getY()-10}, 3);
+				gc.fillPolygon(new double[] {enemy.getX()-20,enemy.getX(),enemy.getX()+20}, new double[] {enemy.getY()-10,enemy.getY()+10,enemy.getY()-10}, 3);
 			});
 			
 			main.getBoard().getProjectiles().forEach(projectile -> {
@@ -61,15 +61,18 @@ public class GameGUI implements Initializable{
 			});
 		});
 	}
-	
 	public void startP() {
+		int scoreValue = 0;
+		String currentScore = "";
+		enemy();
+		projectile();
 		Thread startThread = new Thread(() -> {		
 			while (true) {
+				
 				try {
 					Thread.sleep(50/3);
-					enemy();
-					projectile();
 					main.getBoard().updatePlayer();
+					main.getBoard().checkEnemyProjectileCollission(highscore, scoreValue, currentScore);
 					paint();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -82,10 +85,17 @@ public class GameGUI implements Initializable{
 	
 	public void projectile() {
 		Runnable projectiles=() -> {
+			while(true) {
+				try {
+					Thread.sleep(20/3);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			main.getBoard().getProjectiles().forEach(projectile -> {
 				projectile.moveUp();
 			});
 			main.getBoard().updateProjectiles();
+			}
 		};
 		Thread projectileThread = new Thread(projectiles); 
 		projectileThread.start();
@@ -93,14 +103,16 @@ public class GameGUI implements Initializable{
 	
 	public void enemy() {
 		Runnable enemies = () -> {
+			while(true) {
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			main.getBoard().getEnemies().forEach(enemy ->{
-				enemy.moveDown();
-			});
+				main.getBoard().getEnemies().forEach(enemy ->{
+					enemy.moveDown();
+				});
+			}
 		};
 		Thread enemyThread = new Thread(enemies);
 		enemyThread.start();

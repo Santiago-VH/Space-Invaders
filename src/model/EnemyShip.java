@@ -5,13 +5,12 @@ public class EnemyShip {
 	private double x;
 	private double y;
 	
-	
-	private int deltaX;
 	private int deltaY;
 	
-	public EnemyShip(double x, double y) {
+	public EnemyShip(double x, double y, int deltaY) {
 		this.setX(x);
 		this.setY(y);
+		this.deltaY=deltaY;
 	}
 
 	public double getX() {
@@ -30,14 +29,6 @@ public class EnemyShip {
 		this.y = y;
 	}
 
-	public int getDeltaX() {
-		return deltaX;
-	}
-
-	public void setDeltaX(int deltaX) {
-		this.deltaX = deltaX;
-	}
-
 	public int getDeltaY() {
 		return deltaY;
 	}
@@ -47,7 +38,7 @@ public class EnemyShip {
 	}
 
 	public void moveDown() {
-		y += deltaY;
+		this.y += deltaY;
 	}
 	
 	

@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javafx.scene.control.Label;
+
 public class Board {
 
 	public static final int WIDTH = 600;
@@ -96,18 +98,74 @@ public class Board {
 			counter--;
 		}
 		for(int i=1;i<=counter/2;i++) {
-			placeEnemy(center-60*i,yPosition);
+			placeEnemy(center-80*i,yPosition);
 		}
 		for(int i=1;i<=counter/2;i++) {
-			placeEnemy(center+60*i,yPosition);
+			placeEnemy(center+80*i,yPosition);
 		}
 	}
 	
 	public void placeEnemy(int xPosition, int yPosition) {
-		EnemyShip ship = new EnemyShip(xPosition,yPosition);
+		
+		EnemyShip ship = new EnemyShip(xPosition,yPosition, 1);
 		enemies.add(ship);
 	}
 	
+	public void checkEnemyProjectileCollission(Label highscore, int scoreValue, String currentScore) {
+		
+		for(int i=0;i<enemies.size();i++) {
+			EnemyShip enemy=enemies.get(i);
+			
+			for(int j=0;j<projectiles.size();j++) {
+				
+				Projectile projectile=projectiles.get(j);
+				if(projectile.getX()==enemy.getX()&&projectile.getX()==enemy.getX()) {
+					enemies.remove(i);
+					projectiles.remove(j);
+					scoreValue += 10;
+					currentScore= ""+scoreValue;
+					Integer.parseInt(currentScore);
+					highscore.setText(currentScore);
+				}
+			}
+		}
+	}
+	
+	public boolean betweenXProjectileToEnemy(double enemyLeftSide, double enemyRightSide, double projectileLeftSide, double projectileRightSide) {
+		if(enemyLeftSide >= projectileLeftSide &&  enemyRightSide > projectileLeftSide && enemyRightSide <= projectileRightSide &&  enemyLeftSide < projectileRightSide) {
+			return true;
+		}else {
+			return false;
+		}	
+	}
+	
+	public boolean betweenYProjectileToEnemy(double enemyBottom, double enemyTop, double projectileTop) {
+		if(enemyBottom <= projectileTop && enemyTop < projectileTop) {
+			return true;
+		}else {
+			return false;
+		}	
+	}
 	
 	
+	/*public void checkEnemyProjectileCollission(Label highscore, int scoreValue, String currentScore) {
+		for(int i=0;i<enemies.size();i++) {
+			EnemyShip enemy=enemies.get(i);
+			
+			for(int j=0;j<projectiles.size();j++) {
+				Projectile projectile=projectiles.get(j);
+				
+				
+				if(betweenXProjectileToEnemy(enemy.getX()-20,enemy.getX()+20,projectile.getX()-2, projectile.getX())==true &&
+					betweenYProjectileToEnemy(enemy.getY()+10, enemy.getY()-10, projectile.getY()-5)==true) {
+					enemies.remove(i);
+					projectiles.remove(j);
+					scoreValue += 10;
+					currentScore= ""+scoreValue;
+					Integer.parseInt(currentScore);
+					highscore.setText(currentScore);
+				}
+			}
+		}
+	}*/
 }
