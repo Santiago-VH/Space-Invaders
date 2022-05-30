@@ -38,7 +38,7 @@ public class EnemyShip {
 	}
 
 	public void moveDown() {
-		this.y += deltaY;
+		this.y += deltaY*4;
 	}
 	
 	

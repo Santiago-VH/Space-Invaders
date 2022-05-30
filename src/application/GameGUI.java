@@ -11,8 +11,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import model.Board;
-import model.PlayerShip;
 import model.Projectile;
 
 public class GameGUI implements Initializable{
@@ -58,12 +56,12 @@ public class GameGUI implements Initializable{
 			
 			main.getBoard().getProjectiles().forEach(projectile -> {
 				gc.fillRect(projectile.getX()-2, projectile.getY()-5, 4, 10);
+				
+				highscore.setText(String.valueOf(main.getBoard().getScore()));
 			});
 		});
 	}
 	public void startP() {
-		int scoreValue = 0;
-		String currentScore = "";
 		enemy();
 		projectile();
 		Thread startThread = new Thread(() -> {		
@@ -72,8 +70,9 @@ public class GameGUI implements Initializable{
 				try {
 					Thread.sleep(50/3);
 					main.getBoard().updatePlayer();
-					main.getBoard().checkEnemyProjectileCollission(highscore, scoreValue, currentScore);
+					main.getBoard().checkEnemyCollission();
 					paint();
+					updateText();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -137,5 +136,16 @@ public class GameGUI implements Initializable{
 		default:
 			break;
 		}
+	}
+	
+	public void updateText() {
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				highscore.setText(String.valueOf(main.getBoard().getScore()));
+			}
+			
+		});
 	}
 }

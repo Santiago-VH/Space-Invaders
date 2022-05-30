@@ -1,8 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import java.util.concurrent.CopyOnWriteArrayList;	
 import javafx.scene.control.Label;
 
 public class Board {
@@ -11,6 +9,7 @@ public class Board {
 	public static final int HEIGHT = 600;
 	public static final int MAX_EROW=8;
 	
+	private int score;
 	private int eShipAmount;
 	private PlayerShip fShip;
 	private CopyOnWriteArrayList<EnemyShip> enemies;
@@ -20,6 +19,7 @@ public class Board {
 		setPlayerShip(new PlayerShip(300, 500));
 		fShip.setDeltaX(2);
 		eShipAmount=4;
+		score=0;
 		enemies=new CopyOnWriteArrayList<EnemyShip>();
 		projectiles=new CopyOnWriteArrayList<Projectile>();
 		createEnemies();
@@ -111,61 +111,43 @@ public class Board {
 		enemies.add(ship);
 	}
 	
-	public void checkEnemyProjectileCollission(Label highscore, int scoreValue, String currentScore) {
-		
-		for(int i=0;i<enemies.size();i++) {
-			EnemyShip enemy=enemies.get(i);
-			
-			for(int j=0;j<projectiles.size();j++) {
-				
-				Projectile projectile=projectiles.get(j);
-				if(projectile.getX()==enemy.getX()&&projectile.getX()==enemy.getX()) {
-					enemies.remove(i);
-					projectiles.remove(j);
-					scoreValue += 10;
-					currentScore= ""+scoreValue;
-					Integer.parseInt(currentScore);
-					highscore.setText(currentScore);
-				}
-			}
-		}
+	public void checkEnemyCollission() {
+        for (int i = 0; i < enemies.size(); i++) {
+            double enemyTop = enemies.get(i).getY() - 10;
+            double enemyBottom = enemies.get(i).getY() + 10;
+            for (int j = 0; j < projectiles.size(); j++) {
+                double projectileTop = projectiles.get(j).getY() - 5;
+                double projectileBottom = projectiles.get(j).getY() + 5;
+
+                boolean hasTopHit = projectileTop < enemyBottom && projectileTop > enemyTop;
+                boolean hasBottomHit = projectileBottom < enemyBottom && projectileBottom > enemyTop;
+
+                if ((hasTopHit || hasBottomHit)) {
+                    double enemyLeft = enemies.get(i).getX() - 20;
+                    double enemyRight = enemies.get(i).getX() + 20;
+                    double projectileLeft = projectiles.get(j).getX() - 2;
+                    double projectileRight = projectiles.get(j).getX() + 2;
+
+                    boolean hasLeftHit = projectileLeft > enemyLeft && projectileLeft < enemyRight;
+                    boolean hasRightHit = projectileRight > enemyLeft && projectileRight < enemyRight;
+
+                    if (hasLeftHit || hasRightHit) {
+                        enemies.remove(i);
+                        projectiles.remove(j);
+                        score++;
+                    }
+
+                }
+            }
+        }
 	}
 	
-	public boolean betweenXProjectileToEnemy(double enemyLeftSide, double enemyRightSide, double projectileLeftSide, double projectileRightSide) {
-		if(enemyLeftSide >= projectileLeftSide &&  enemyRightSide > projectileLeftSide && enemyRightSide <= projectileRightSide &&  enemyLeftSide < projectileRightSide) {
-			return true;
-		}else {
-			return false;
-		}	
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 	
-	public boolean betweenYProjectileToEnemy(double enemyBottom, double enemyTop, double projectileTop) {
-		if(enemyBottom <= projectileTop && enemyTop < projectileTop) {
-			return true;
-		}else {
-			return false;
-		}	
-	}
-	
-	
-	/*public void checkEnemyProjectileCollission(Label highscore, int scoreValue, String currentScore) {
-		for(int i=0;i<enemies.size();i++) {
-			EnemyShip enemy=enemies.get(i);
-			
-			for(int j=0;j<projectiles.size();j++) {
-				Projectile projectile=projectiles.get(j);
-				
-				
-				if(betweenXProjectileToEnemy(enemy.getX()-20,enemy.getX()+20,projectile.getX()-2, projectile.getX())==true &&
-					betweenYProjectileToEnemy(enemy.getY()+10, enemy.getY()-10, projectile.getY()-5)==true) {
-					enemies.remove(i);
-					projectiles.remove(j);
-					scoreValue += 10;
-					currentScore= ""+scoreValue;
-					Integer.parseInt(currentScore);
-					highscore.setText(currentScore);
-				}
-			}
-		}
-	}*/
 }
