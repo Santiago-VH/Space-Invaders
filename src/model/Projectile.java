@@ -41,11 +41,7 @@ public class Projectile {
 	}
 
 	public void moveUp() {
-		this.y -= deltaY*5;
-	}
-	
-	public void moveDown() {
-		this.y += deltaY*2;
+		this.y -= deltaY;
 	}
 
 	public boolean isFromPlayer() {

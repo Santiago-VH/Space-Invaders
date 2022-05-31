@@ -11,9 +11,9 @@ public class Board {
 	private int score;
 	private int eShipAmount;
 	private PlayerShip pShip;
-	private EnemyShip eShip;
 	private CopyOnWriteArrayList<EnemyShip> enemies;
 	private CopyOnWriteArrayList<Projectile> projectiles;
+	private boolean gameHasFinished;
 	
 	public Board() {
 		setPlayerShip(new PlayerShip(300, 500));
@@ -22,6 +22,7 @@ public class Board {
 		score=0;
 		enemies=new CopyOnWriteArrayList<EnemyShip>();
 		projectiles=new CopyOnWriteArrayList<Projectile>();
+		this.gameHasFinished=false;
 		createEnemies();
 	}
 	
@@ -98,11 +99,14 @@ public class Board {
                     boolean hasLeftHit = projectileLeft > enemyLeft && projectileLeft < enemyRight;
                     boolean hasRightHit = projectileRight > enemyLeft && projectileRight < enemyRight;
 
-                    if ((hasLeftHit || hasRightHit) && projectiles.get(j).isFromPlayer()) {
+                    if ((hasLeftHit || hasRightHit) && projectiles.get(j).isFromPlayer() ) {
                         enemies.remove(i);
                         projectiles.remove(j);
                         score+=100;
                         System.out.println(score);
+                        if(enemies.isEmpty()) {
+                    		gameHasFinished=true;
+                    	}
                     }
 
                 }
@@ -110,11 +114,10 @@ public class Board {
         }
 	}
 	
-	public boolean checkGameOverStates() {
+	public void checkGameOverStates() {
 		double playerTop = getPlayerShip().getY()-20;
 		double playerBottom = getPlayerShip().getY()+20;
-		boolean playerShot=false;
-		boolean playerReached=false;
+		double enemyBottom = enemies.get(enemies.size()-1).getY() + 10;
 		
 			for(int index=0; index < projectiles.size();index++) {
 				double projectileTop = projectiles.get(index).getY() - 5;
@@ -132,41 +135,29 @@ public class Board {
                     boolean hasLeftHit = projectileLeft > playerLeft && projectileLeft < playerRight;
                     boolean hasRightHit = projectileRight > playerLeft && projectileRight < playerRight;
                     if(hasLeftHit || hasRightHit) {
-            			playerShot=true;
             			projectiles.remove(index);
+            			gameHasFinished=true;
     				}
                 }
 			}
-			
-			for(int index = 0; index < enemies.size(); index++) {
-			double enemyBottom = enemies.get(index).getY()+10;
-			
-			boolean hasEnemyReachedPlayer = playerTop <= enemyBottom;
-				if(hasEnemyReachedPlayer) {
-					playerReached=true;
-				}
-			}
-			
-			if(playerShot || playerReached) {
-				
-				return true;
-			}
-			return false;
+			if (playerTop<=enemyBottom) {	
+				gameHasFinished=true;
+			}	
 	}
 	
+
+	
 	public void randomShot() {
-		
 		double interval;
 		for (int i = 0; i < enemies.size(); i++) {
-			interval = (int) (Math.random() * (1) + 0 );
-			if(interval<=0.20) {
-				Projectile projectile = new Projectile(getEShip().getX(), getEShip().getY()+20,1, false);
+			interval = Math.random() * (1) ;
+			if(interval<=0.1) {
+				Projectile projectile = new Projectile(getEnemies().get(i).getX(), getEnemies().get(i).getY()+20,-1, false);
+				projectile.moveUp();
 				getProjectiles().add(projectile);
-				projectile.moveDown();
+				
 			}
 		}
-		
-		
 		
 	}
 	
@@ -209,15 +200,13 @@ public class Board {
 	public void setScore(int score) {
 		this.score = score;
 	}
-
-	public EnemyShip getEShip() {
-		return eShip;
+	
+	public boolean getGameHasFinished() {
+		return gameHasFinished;
 	}
 
-	public void setEShip(EnemyShip eShip) {
-		this.eShip = eShip;
+	public void setGameHasFinished(boolean gameHasFinished) {
+		this.gameHasFinished = gameHasFinished;
 	}
-	
-	
 	
 }

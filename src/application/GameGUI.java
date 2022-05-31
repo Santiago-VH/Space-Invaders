@@ -26,7 +26,6 @@ public class GameGUI implements Initializable{
 	
 	private GraphicsContext gc;
 	
-	private boolean gameHasFinished;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -61,9 +60,8 @@ public class GameGUI implements Initializable{
 			});
 			
 			highscore.setText(String.valueOf(main.getBoard().getScore()));
-			if(main.getBoard().checkGameOverStates()) {
+			if(main.getBoard().getGameHasFinished()) {
 				gc.fillText("Game over! Your final score is "+getHighscore().getText(), 215, 300);
-				
 				}
 		});
 	}
@@ -71,13 +69,15 @@ public class GameGUI implements Initializable{
 		enemy();
 		projectile();
 		Runnable start=() -> {
-			while (true) {
+			while (!main.getBoard().getGameHasFinished()) {
 				
 				try {
 					Thread.sleep(30/3);
 					main.getBoard().updatePlayer();
 					main.getBoard().checkProjectileToEnemy();
-					main.getBoard().checkGameOverStates();
+					if(!main.getBoard().getGameHasFinished()) {
+						main.getBoard().checkGameOverStates();
+					}
 					paint();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -91,9 +91,9 @@ public class GameGUI implements Initializable{
 	
 	public void projectile() {
 		Runnable projectiles=() -> {
-			while(true) {
+			while(!main.getBoard().getGameHasFinished()) {
 				try {
-					Thread.sleep(10/3);
+					Thread.sleep(20/3);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -109,16 +109,15 @@ public class GameGUI implements Initializable{
 	
 	public void enemy() {
 		Runnable enemies = () -> {
-			while(true) {
+			while(!main.getBoard().getGameHasFinished()) {
 				
 			try {
 				Thread.sleep(1000);
-				
+				main.getBoard().randomShot();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 				main.getBoard().getEnemies().forEach(enemy ->{
-					//main.getBoard().randomShot();
 					enemy.moveDown();
 				});
 			}
@@ -151,5 +150,8 @@ public class GameGUI implements Initializable{
 	public Label getHighscore() {
 		return highscore;
 	}
+
+
+	
 	
 }
