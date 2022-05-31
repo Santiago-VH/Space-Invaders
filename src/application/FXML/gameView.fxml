@@ -7,17 +7,17 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: BLACK;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GameGUI">
-   <center>
-      <Canvas fx:id="canvas1" height="600.0" onKeyPressed="#movePlayer" width="600.0" BorderPane.alignment="CENTER" />
-   </center>
    <top>
       <Label fx:id="highscore" text="0" textFill="WHITE" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
          <graphic>
-            <Text fx:id="label1" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="HIGHSCORE" textAlignment="CENTER" />
+            <Text fx:id="label1" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="SCORE" textAlignment="CENTER" />
          </graphic>
       </Label>
    </top>
+   <center>
+      <Canvas fx:id="canvas1" height="600.0" onKeyPressed="#movePlayer" width="600.0" BorderPane.alignment="CENTER" />
+   </center>
 </BorderPane>
