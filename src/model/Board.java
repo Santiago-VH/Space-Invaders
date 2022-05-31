@@ -18,7 +18,7 @@ public class Board {
 	public Board() {
 		setPlayerShip(new PlayerShip(300, 500));
 		pShip.setDeltaX(2);
-		eShipAmount=11;
+		eShipAmount=18;
 		score=0;
 		enemies=new CopyOnWriteArrayList<EnemyShip>();
 		projectiles=new CopyOnWriteArrayList<Projectile>();
@@ -39,9 +39,10 @@ public class Board {
 	
 	public void updateProjectiles() {
 		for(Projectile projectile:projectiles) {
-			if (projectile.getDeltaY() > 0 && projectile.getY() + projectile.getDeltaY() > HEIGHT) {
+			if (projectile.getDeltaY() > 0 && projectile.getY() + projectile.getDeltaY() > HEIGHT && projectile.getY() + projectile.getDeltaY() < 0) {
 				projectiles.remove(projectile);
 			}
+			
 		}
 		
 	}
@@ -54,7 +55,7 @@ public class Board {
 		for(int i=0;i<a;i++) {
 			placeRow(MAX_EROW,y+40*i);
 		}
-		placeRow(b,y+30*a);
+		placeRow(b,y+40*a);
 	}
 	
 	public void placeRow(int enemyAmount, int yPosition) {
@@ -80,18 +81,23 @@ public class Board {
 	}
 	
 	public void checkProjectileToEnemy() {
+		
         for (int i = 0; i < enemies.size(); i++) {
             double enemyTop = enemies.get(i).getY() - 10;
             double enemyBottom = enemies.get(i).getY() + 10;
+            
             for (int j = 0; j < projectiles.size(); j++) {
+            	
                 double projectileTop = projectiles.get(j).getY() - 5;
                 double projectileBottom = projectiles.get(j).getY() + 5;
-
+                
                 boolean hasTopHit = projectileTop < enemyBottom && projectileTop > enemyTop;
                 boolean hasBottomHit = projectileBottom < enemyBottom && projectileBottom > enemyTop;
-
                 if ((hasTopHit || hasBottomHit)) {
+                	
+                	try{
                     double enemyLeft = enemies.get(i).getX() - 20;
+                	
                     double enemyRight = enemies.get(i).getX() + 20;
                     double projectileLeft = projectiles.get(j).getX() - 2;
                     double projectileRight = projectiles.get(j).getX() + 2;
@@ -103,11 +109,14 @@ public class Board {
                         enemies.remove(i);
                         projectiles.remove(j);
                         score+=100;
-                        System.out.println(score);
                         if(enemies.isEmpty()) {
                     		gameHasFinished=true;
                     	}
                     }
+                		} catch(Exception e) {
+                		System.out.println("Si te salió este error o eres muy suertudo o muy desafortunado, es un error muy aleatorio");
+                		e.printStackTrace();
+                		}
 
                 }
             }
