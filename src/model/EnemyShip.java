@@ -6,7 +6,6 @@ public class EnemyShip {
 	private double y;
 	
 	private int deltaY;
-	private boolean isEnemy;
 	
 	public EnemyShip(double x, double y, int deltaY) {
 		this.setX(x);
@@ -41,14 +40,5 @@ public class EnemyShip {
 	public void moveDown() {
 		this.y += deltaY*8;
 	}
-
-	public boolean isEnemy() {
-		return isEnemy;
-	}
-
-	public void setEnemy(boolean isEnemy) {
-		this.isEnemy = isEnemy;
-	}
-	
 	
 }

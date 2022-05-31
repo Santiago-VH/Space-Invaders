@@ -26,6 +26,8 @@ public class GameGUI implements Initializable{
 	
 	private GraphicsContext gc;
 	
+	private boolean gameHasFinished;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		canvas1.setFocusTraversable(true);
@@ -55,12 +57,14 @@ public class GameGUI implements Initializable{
 			});
 			
 			main.getBoard().getProjectiles().forEach(projectile -> {
-				gc.fillRect(projectile.getX()-2, projectile.getY()-5, 4, 10);
-				
-				highscore.setText(String.valueOf(main.getBoard().getScore()));
-				
-				gc.fillText("Game over! Your final score is "+getHighscore().getText(), 215, 300);
+				gc.fillRect(projectile.getX()-2, projectile.getY()-5, 4, 10);		
 			});
+			
+			highscore.setText(String.valueOf(main.getBoard().getScore()));
+			if(main.getBoard().checkGameOverStates()) {
+				gc.fillText("Game over! Your final score is "+getHighscore().getText(), 215, 300);
+				
+				}
 		});
 	}
 	public void startP() {
@@ -70,12 +74,11 @@ public class GameGUI implements Initializable{
 			while (true) {
 				
 				try {
-					Thread.sleep(50/3);
+					Thread.sleep(30/3);
 					main.getBoard().updatePlayer();
 					main.getBoard().checkProjectileToEnemy();
 					main.getBoard().checkGameOverStates();
 					paint();
-					updateText();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -90,7 +93,7 @@ public class GameGUI implements Initializable{
 		Runnable projectiles=() -> {
 			while(true) {
 				try {
-					Thread.sleep(20/3);
+					Thread.sleep(10/3);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -100,22 +103,23 @@ public class GameGUI implements Initializable{
 			main.getBoard().updateProjectiles();
 			}
 		};
-		Thread projectileThread = new Thread(projectiles); 
+		Thread projectileThread = new Thread(projectiles);
 		projectileThread.start();
 	}
 	
 	public void enemy() {
 		Runnable enemies = () -> {
 			while(true) {
-				int randomInterval=0;
+				
 			try {
 				Thread.sleep(1000);
+				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 				main.getBoard().getEnemies().forEach(enemy ->{
+					//main.getBoard().randomShot();
 					enemy.moveDown();
-					randomShot(randomInterval);
 				});
 			}
 		};
@@ -135,7 +139,7 @@ public class GameGUI implements Initializable{
 			break;
 			
 		case SPACE:
-			Projectile projectile = new Projectile(main.getBoard().getPlayerShip().getX(), main.getBoard().getPlayerShip().getY()-30,1);
+			Projectile projectile = new Projectile(main.getBoard().getPlayerShip().getX(), main.getBoard().getPlayerShip().getY()-30,1, true);
 			main.getBoard().getProjectiles().add(projectile);
 			break;
 		
@@ -143,32 +147,9 @@ public class GameGUI implements Initializable{
 			break;
 		}
 	}
-	
-	public void updateText() {
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				Runnable enemiesShoot = () -> {
-				highscore.setText(String.valueOf(main.getBoard().getScore()));
-				
-				};
-				Thread enemyShoot = new Thread(enemiesShoot);
-				//enemyShoot.start();;
-			}
-			
-		});
-	}
-	
-	public void randomShot(int interval) {
-		
-		interval = (int) (Math.random() * (20) + 1);
-		
-	}
 
 	public Label getHighscore() {
 		return highscore;
 	}
-	
 	
 }

@@ -37,11 +37,11 @@ public class PlayerShip {
 	}
 
 	public void moveRight() {
-		x += deltaX;
+		x += deltaX*2;
 	}
 	
 	public void moveLeft() {
-		x -= deltaX;
+		x -= deltaX*2;
 	}
 	
 }

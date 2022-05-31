@@ -7,10 +7,13 @@ public class Projectile {
 	
 	private int deltaY;
 	
-	public Projectile(double x, double y, int deltaY) {
+	private boolean isFromPlayer;
+	
+	public Projectile(double x, double y, int deltaY, boolean isFromPlayer) {
 		this.setX(x);
 		this.setY(y);
 		this.deltaY=deltaY;
+		this.isFromPlayer=isFromPlayer;
 	}
 
 	public double getX() {
@@ -44,4 +47,14 @@ public class Projectile {
 	public void moveDown() {
 		this.y += deltaY*2;
 	}
+
+	public boolean isFromPlayer() {
+		return isFromPlayer;
+	}
+
+	public void setFromPlayer(boolean isFromPlayer) {
+		this.isFromPlayer = isFromPlayer;
+	}
+	
+	
 }

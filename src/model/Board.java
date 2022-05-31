@@ -10,13 +10,14 @@ public class Board {
 	
 	private int score;
 	private int eShipAmount;
-	private PlayerShip fShip;
+	private PlayerShip pShip;
+	private EnemyShip eShip;
 	private CopyOnWriteArrayList<EnemyShip> enemies;
 	private CopyOnWriteArrayList<Projectile> projectiles;
 	
 	public Board() {
 		setPlayerShip(new PlayerShip(300, 500));
-		fShip.setDeltaX(2);
+		pShip.setDeltaX(2);
 		eShipAmount=11;
 		score=0;
 		enemies=new CopyOnWriteArrayList<EnemyShip>();
@@ -26,12 +27,12 @@ public class Board {
 	
 	public void updatePlayer() {
 		
-		if (fShip.getX() > WIDTH-15) {
-			fShip.setX(585);
+		if (pShip.getX() > WIDTH-15) {
+			pShip.setX(585);
 		}
 		
-		if (fShip.getX() < 15) {
-			fShip.setX(15);
+		if (pShip.getX() < 15) {
+			pShip.setX(15);
 		}
 	}
 	
@@ -97,10 +98,11 @@ public class Board {
                     boolean hasLeftHit = projectileLeft > enemyLeft && projectileLeft < enemyRight;
                     boolean hasRightHit = projectileRight > enemyLeft && projectileRight < enemyRight;
 
-                    if (hasLeftHit || hasRightHit) {
+                    if ((hasLeftHit || hasRightHit) && projectiles.get(j).isFromPlayer()) {
                         enemies.remove(i);
                         projectiles.remove(j);
                         score+=100;
+                        System.out.println(score);
                     }
 
                 }
@@ -108,7 +110,7 @@ public class Board {
         }
 	}
 	
-	public void checkGameOverStates() {
+	public boolean checkGameOverStates() {
 		double playerTop = getPlayerShip().getY()-20;
 		double playerBottom = getPlayerShip().getY()+20;
 		boolean playerShot=false;
@@ -122,8 +124,8 @@ public class Board {
                 boolean hasBottomHitPlayer = projectileBottom < playerBottom && projectileBottom > playerTop;
                 
                 if ((hasTopHitPlayer || hasBottomHitPlayer)) {
-                	double playerLeft = fShip.getX() - 15;
-                    double playerRight = fShip.getX() + 15;
+                	double playerLeft = pShip.getX() - 15;
+                    double playerRight = pShip.getX() + 15;
                     double projectileLeft = projectiles.get(index).getX() - 2;
     				double projectileRight = projectiles.get(index).getX() + 2;
 
@@ -145,18 +147,35 @@ public class Board {
 				}
 			}
 			
-			if(playerShot == true || playerReached == true) {
-				System.out.println("reached");
+			if(playerShot || playerReached) {
 				
+				return true;
 			}
+			return false;
+	}
+	
+	public void randomShot() {
+		
+		double interval;
+		for (int i = 0; i < enemies.size(); i++) {
+			interval = (int) (Math.random() * (1) + 0 );
+			if(interval<=0.20) {
+				Projectile projectile = new Projectile(getEShip().getX(), getEShip().getY()+20,1, false);
+				getProjectiles().add(projectile);
+				projectile.moveDown();
+			}
+		}
+		
+		
+		
 	}
 	
 	public PlayerShip getPlayerShip() {
-		return fShip;
+		return pShip;
 	}
 
-	public void setPlayerShip(PlayerShip fShip) {
-		this.fShip = fShip;
+	public void setPlayerShip(PlayerShip pShip) {
+		this.pShip = pShip;
 	}
 
 	public CopyOnWriteArrayList<EnemyShip> getEnemies() {
@@ -190,5 +209,15 @@ public class Board {
 	public void setScore(int score) {
 		this.score = score;
 	}
+
+	public EnemyShip getEShip() {
+		return eShip;
+	}
+
+	public void setEShip(EnemyShip eShip) {
+		this.eShip = eShip;
+	}
+	
+	
 	
 }
